@@ -110,15 +110,15 @@ class CountDownTimer:
         self.adjust(0, 0)      # 刷新显示
 
     def count_down(self):
-        if self.running:
-            total = self.minutes * 60 + self.seconds
+        if self.running:     
+            total = self.minutes * 60 + self.seconds       
+            self.update_big()
             if total <= 0:
                 self.running = False
                 self.big.config(fg="red")
                 threading.Thread(target=self._beep).start()
                 return
             
-            self.update_big()
             if self.seconds == 0:
                 self.minutes -= 1
                 self.seconds = 59
