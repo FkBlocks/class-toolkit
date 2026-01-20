@@ -1,0 +1,5 @@
+{
+    "随机点名": "./tools/random-call.py",
+    "倒计时": "./tools/count-down.py",
+    "音量恢复": "./tools/recovery-voice.py"
+}
