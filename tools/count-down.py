@@ -105,10 +105,12 @@ class CountDownTimer:
         self.running = False
         if self.after_id:
             self.root.after_cancel(self.after_id)
+        self.big.config(fg="#409eff", )
+        self.adjust(0, 0)      # 刷新显示
         self.minutes = 1
         self.seconds = 0
         self.adjust(0, 0)      # 刷新显示
-
+        
     def count_down(self):
         if self.running:     
             total = self.minutes * 60 + self.seconds       
