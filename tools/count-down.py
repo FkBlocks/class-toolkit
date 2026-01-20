@@ -129,10 +129,16 @@ class CountDownTimer:
             self.after_id = self.root.after(1000, self.count_down)
 
     def _beep(self):
-        for _ in range(3):
-            print("\a", end="", flush=True)
+        try:
+            import winsound
+            for _ in range(3):
+                winsound.Beep(1000, 300)
+        except Exception as e:
+            logger.error(f"播放声音失败：{e}")
             import time
-            time.sleep(0.3)
+            for _ in range(3):
+                print("\a", end="", flush=True)
+                time.sleep(0.3)
 
     # ---------- 居中 + 拖拽 ----------
     def center_window(self, w, h):
