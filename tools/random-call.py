@@ -87,7 +87,7 @@ class BatchRollCall:
         top.attributes("-topmost", True)   # 弹窗置顶
         self.center_window(top, 500, 500)  # 居中
 
-        txt = scrolledtext.ScrolledText(top, width=20, height=10,
+        txt = scrolledtext.ScrolledText(top, width=20, height=7,
                                         font=("Microsoft YaHei", 32),
                                         bg="#f7f7f7", fg="#409eff")
         txt.pack(padx=20, pady=20)
