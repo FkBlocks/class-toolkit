@@ -163,6 +163,21 @@ class Settings:
         )
         desc_label.pack(side=tk.LEFT, padx=5)
 
+        # 退出时是否询问
+        if_ask = self.config.get("ask_exit", True)
+        self.ask_exit_var = tk.BooleanVar(value=if_ask)
+        ask_exit_frame = ttk.Frame(self.right_panel)
+        ask_exit_frame.pack(pady=10, fill=tk.X, padx=20)
+
+        ask_exit_check = ttk.Checkbutton(
+            ask_exit_frame,
+            text="退出时询问",
+            variable=self.ask_exit_var,
+            command=self.toggle_ask_exit
+        )
+        ask_exit_check.pack(side=tk.LEFT, padx=5)
+
+
         # 显示日志按钮
         show_log_btn = ttk.Button(
             self.right_panel,
@@ -172,7 +187,11 @@ class Settings:
         )
         show_log_btn.pack(pady=10)
     
-
+    def toggle_ask_exit(self):
+        """切换退出时询问设置"""
+        self.config["ask_exit"] = self.ask_exit_var.get()
+        self.save_config()
+        
     def show_log(self):
         """显示日志"""
         log_path = os.path.join(os.path.dirname(__file__), "./log/running.log")

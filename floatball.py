@@ -166,14 +166,21 @@ class Ball:
         """退出程序"""
         if self.menu_win:
             # 弹窗确认是否关闭
-            if messagebox.askyesno("确认", "确认退出？"):
+            # 设置：退出时询问，config.json: "ask_exit": true
+            if self.config.get("ask_exit", True):
+                if messagebox.askyesno("确认", "确认退出？"):
+                    self.collapse()
+                    self.root.destroy()
+                    logger.info("程序退出")
+                    sys.exit(0)
+                else:
+                    logger.info("取消退出")
+            
+            else:
                 self.collapse()
                 self.root.destroy()
+                logger.info("程序退出")
                 sys.exit(0)
-
-        else:
-            logger.info("程序退出")
-
 
     def run(self):
         """主循环"""
