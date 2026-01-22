@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 import subprocess
 import sys
 import platform
@@ -164,10 +165,14 @@ class Ball:
     def quit(self, _=None):
         """退出程序"""
         if self.menu_win:
-            self.menu_win.destroy()
-        self.root.destroy()
-        logger.info("程序退出")
-        sys.exit(0)
+            # 弹窗确认是否关闭
+            if messagebox.askyesno("确认", "确认退出？"):
+                self.collapse()
+                self.root.destroy()
+                sys.exit(0)
+
+        else:
+            logger.info("程序退出")
 
 
     def run(self):
