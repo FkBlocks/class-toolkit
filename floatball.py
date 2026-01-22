@@ -70,7 +70,7 @@ class Ball:
 
     def load_config(self):
         """加载配置文件"""
-        config_path = os.path.join(os.path.dirname(__file__), "config/config.json")
+        config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config", "config.json")
         default_config = {
             "floatball_color": "#409eff",
             "menu_color": "#409eff",
@@ -109,7 +109,7 @@ class Ball:
         # 设置按钮
         settngs_btn = tk.Button(self.menu_win, text="设置", width=12, height=2,
                                 relief="flat", bg=self.config.get("settings_button_color", "#af5fff"), fg="white",
-                                command=lambda: self.run_tool(os.path.join(os.path.dirname(__file__), "./tools/settings.py")))
+                                command=lambda: self.run_tool(os.path.join(os.path.dirname(os.path.abspath(__file__)), "tools", "settings.py")))
         settngs_btn.pack(pady=2)
 
         # 退出按钮

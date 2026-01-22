@@ -10,6 +10,9 @@ from logger import logger
 
 class Settings:
     def __init__(self):
+        # 获取项目根目录
+        self.project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        
         self.window = tk.Tk()
         self.window.title("设置")
         self.center_window(self.window, 800, 600)
@@ -60,7 +63,7 @@ class Settings:
 
     def load_config(self):
         """加载配置文件"""
-        config_path = os.path.join(os.path.dirname(__file__), "../config/config.json")
+        config_path = os.path.join(self.project_root, "config", "config.json")
         default_config = {
             "floatball_color": "#409eff",
             "menu_color": "#409eff",
@@ -76,13 +79,13 @@ class Settings:
 
     def save_config(self):
         """保存配置文件"""
-        config_path = os.path.join(os.path.dirname(__file__), "../config/config.json")
+        config_path = os.path.join(self.project_root, "config", "config.json")
         with open(config_path, "w", encoding="utf-8") as f:
             json.dump(self.config, f, indent=4, ensure_ascii=False)
 
     def load_tools(self):
         """加载工具列表"""
-        tools_path = os.path.join(os.path.dirname(__file__), "../tools.json")
+        tools_path = os.path.join(self.project_root, "tools.json")
         try:
             with open(tools_path, "r", encoding="utf-8") as f:
                 return json.load(f)
@@ -91,7 +94,7 @@ class Settings:
 
     def save_tools(self):
         """保存工具列表"""
-        tools_path = os.path.join(os.path.dirname(__file__), "../tools.json")
+        tools_path = os.path.join(self.project_root, "tools.json")
         with open(tools_path, "w", encoding="utf-8") as f:
             json.dump(self.tools, f, indent=4, ensure_ascii=False)
 
@@ -194,7 +197,7 @@ class Settings:
         
     def show_log(self):
         """显示日志"""
-        log_path = os.path.join(os.path.dirname(__file__), "./log/running.log")
+        log_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "log", "running.log")
         try:
             if platform.system() == "Windows":
                 subprocess.Popen(['notepad.exe', log_path])
@@ -459,7 +462,7 @@ class Settings:
 
             startup_folder = os.path.join(os.environ['APPDATA'], 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup')
             shortcut_path = os.path.join(startup_folder, '课堂工具箱.lnk')
-            main_path = os.path.join(os.path.dirname(__file__), "../main.pyw")
+            main_path = os.path.join(self.project_root, "main.pyw")
 
             if self.autostart_var.get():
                 # 创建快捷方式
@@ -467,7 +470,7 @@ class Settings:
                 shortcut = shell.CreateShortCut(shortcut_path)
                 shortcut.Targetpath = sys.executable
                 shortcut.Arguments = f'"{main_path}"'
-                shortcut.WorkingDirectory = os.path.dirname(main_path)
+                shortcut.WorkingDirectory = self.project_root
                 shortcut.save()
                 messagebox.showinfo("成功", "已设置开机自启动")
                 logger.info("已设置开机自启动")

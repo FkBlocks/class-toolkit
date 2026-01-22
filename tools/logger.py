@@ -2,10 +2,10 @@ import logging
 import os
 from datetime import datetime
 
-LOG_DIR = os.path.join(os.path.dirname(__file__), 'log')
+LOG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'log')
 os.makedirs(LOG_DIR, exist_ok=True)
 
-log_file = os.path.join(LOG_DIR, "./running.log")
+log_file = os.path.join(LOG_DIR, "running.log")
 
 def create_logger(clear_log=False):
     """创建logger实例
