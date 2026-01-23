@@ -5,6 +5,7 @@ import os
 import sys
 import subprocess
 import platform
+import copy
 from logger import logger
 
 
@@ -18,8 +19,16 @@ class Settings:
         self.center_window(self.window, 800, 600)
 
         # 加载配置
+        self.default_config = {
+            "settings_button_color": "#0080ff",
+            "floatball_color": "#409eff",
+            "menu_color": "#409eff",
+            "exit_button_color": "#ff4d4f",
+            "ask_exit": True
+        }
         self.config = self.load_config()
         self.tools = self.load_tools()
+
 
         # 主框架
         self.main_frame = ttk.Frame(self.window)
@@ -64,18 +73,18 @@ class Settings:
     def load_config(self):
         """加载配置文件"""
         config_path = os.path.join(self.project_root, "config", "config.json")
-        default_config = {
-            "floatball_color": "#409eff",
-            "menu_color": "#409eff",
-            "settings_button_color": "#0080ff",
-            "exit_button_color": "#ff4d4f"
-        }
+        
         try:
             with open(config_path, "r", encoding="utf-8") as f:
                 return json.load(f)
         except Exception as e:
-            logger.warning(f"加载配置文件失败，使用默认配置: {e}")
-            return default_config
+            messagebox.showerror("错误", "加载配置失败: 可能是配置文件缺失导致的错误。" \
+                                 "\n使用默认配置，这将无法使用“设置”并保存配置功能。" \
+                                 "\n错误详情见日志文件: log/running.log")
+            
+            logger.error(f"加载配置文件失败，使用默认配置: {e}")
+            self.window.destroy()
+            return self.default_config
 
     def save_config(self):
         """保存配置文件"""
@@ -210,18 +219,18 @@ class Settings:
             messagebox.showwarning("错误", "打开日志文件失败")
     
 
-    def add_log_button(self):
-        """在右侧面板底部添加日志按钮"""
-        bottom_frame = ttk.Frame(self.right_panel)
-        bottom_frame.pack(side=tk.BOTTOM, fill=tk.X, pady=10, padx=20)
+    # def add_log_button(self):
+    #     """在右侧面板底部添加日志按钮"""
+    #     bottom_frame = ttk.Frame(self.right_panel)
+    #     bottom_frame.pack(side=tk.BOTTOM, fill=tk.X, pady=10, padx=20)
 
-        log_btn = ttk.Button(
-            bottom_frame,
-            text="查看日志",
-            command=self.show_log,
-            width=15
-        )
-        log_btn.pack(side=tk.LEFT)
+    #     log_btn = ttk.Button(
+    #         bottom_frame,
+    #         text="查看日志",
+    #         command=self.show_log,
+    #         width=15
+    #     )
+    #     log_btn.pack(side=tk.LEFT)
 
         
     def show_appearance_settings(self):
@@ -265,7 +274,7 @@ class Settings:
 
         settings_color_btn = tk.Button(
             settings_frame,
-            bg=self.config.get("settings_button_color", "#af5fff"),
+            bg=self.config.get("settings_button_color", "#0080ff"),
             width=10,
             command=lambda: self.choose_color("settings_button_color", settings_color_btn)
         )
@@ -457,33 +466,39 @@ class Settings:
             return
 
         try:
-            import winshell
-            from win32com.client import Dispatch
+            if platform.system() == 'Windows':
+                import winshell
+                from win32com.client import Dispatch
 
-            startup_folder = os.path.join(os.environ['APPDATA'], 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup')
-            shortcut_path = os.path.join(startup_folder, '课堂工具箱.lnk')
-            main_path = os.path.join(self.project_root, "main.pyw")
+                startup_folder = os.path.join(os.environ['APPDATA'], 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup')
+                shortcut_path = os.path.join(startup_folder, '课堂工具箱.lnk')
+                main_path = os.path.join(self.project_root, "main.pyw")
 
-            if self.autostart_var.get():
-                # 创建快捷方式
-                shell = Dispatch('WScript.Shell')
-                shortcut = shell.CreateShortCut(shortcut_path)
-                shortcut.Targetpath = sys.executable
-                shortcut.Arguments = f'"{main_path}"'
-                shortcut.WorkingDirectory = self.project_root
-                shortcut.save()
-                messagebox.showinfo("成功", "已设置开机自启动")
-                logger.info("已设置开机自启动")
+                if self.autostart_var.get():
+                    # 创建快捷方式
+                    shell = Dispatch('WScript.Shell')
+                    shortcut = shell.CreateShortCut(shortcut_path)
+                    shortcut.Targetpath = sys.executable
+                    shortcut.Arguments = f'"{main_path}"'
+                    shortcut.WorkingDirectory = self.project_root
+                    shortcut.save()
+                    messagebox.showinfo("成功", "已设置开机自启动")
+                    logger.info("已设置开机自启动")
+                else:
+                    # 删除快捷方式
+                    if os.path.exists(shortcut_path):
+                        os.remove(shortcut_path)
+                    messagebox.showinfo("成功", "已取消开机自启动")
+                    logger.info("已取消开机自启动")
             else:
-                # 删除快捷方式
-                if os.path.exists(shortcut_path):
-                    os.remove(shortcut_path)
-                messagebox.showinfo("成功", "已取消开机自启动")
-                logger.info("已取消开机自启动")
+                self.autostart_var.set(False)
+
+
         except ImportError:
-            messagebox.showerror("错误", "缺少必要的库，请安装：pip install pywin32 winshell")
+            messagebox.showerror("错误", "缺少必要的库，请安装 pywin32 winshell库")
             self.autostart_var.set(False)
             logger.error("缺少开机自启动所需的库")
+
         except Exception as e:
             messagebox.showerror("错误", f"操作失败：{e}")
             self.autostart_var.set(False)
@@ -497,13 +512,8 @@ class Settings:
 
     def restore_default_settings(self):
         """恢复默认设置"""
-        if messagebox.askyesno("确认", "确定要恢复默认设置吗？"):
-            self.config = {
-                "settings_button_color": "#0080ff",
-                "floatball_color": "#409eff",
-                "menu_color": "#409eff",
-                "exit_button_color": "#ff4d4f"
-            }
+        if messagebox.askyesno("确认", "确定要恢复默认设置吗？所有设置都会恢复！"):
+            self.config = copy.deepcopy(self.default_config)
             self.save_config()
             # 重新显示外观设置页面（使用show_category确保正确清空和渲染）
             self.show_category("外观")

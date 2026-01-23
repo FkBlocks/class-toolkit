@@ -21,6 +21,13 @@ class Ball:
         self.menu_win = None
 
         # 加载配置
+        self.default_config = {
+            "settings_button_color": "#0080ff",
+            "floatball_color": "#409eff",
+            "menu_color": "#409eff",
+            "exit_button_color": "#ff4d4f",
+            "ask_exit": True
+        }
         self.config = self.load_config()
 
         self.root = tk.Tk()
@@ -30,8 +37,8 @@ class Ball:
         # 计算屏幕右侧靠下位置
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
-        x = screen_width - 80  # 距离右边100像素
-        y = screen_height - 400  # 距离底部300像素
+        x = screen_width - 80  # 距离右边80像素
+        y = screen_height - 400  # 距离底部400像素
         self.root.geometry(f"+{x}+{y}")
 
 
@@ -52,15 +59,21 @@ class Ball:
         self.canvas.pack()
         self.canvas.create_oval(4, 4, 56, 56, fill=self.config.get("floatball_color", "#409eff"), outline="")
         self.canvas.create_text(30, 30, text="工具", fill="#efefef", font=("Microsoft Yahei", 16))
-        self.canvas.bind("<Button-1>", self.toggle)
-        self.root.bind("<ButtonPress-1>", self.start_drag)
+        self.canvas.bind("<ButtonPress-1>", self.start_drag)
+        self.canvas.bind("<ButtonRelease-1>", self.toggle)
         self.root.bind("<B1-Motion>", self.on_drag)
         self.root.bind("<Escape>", self.quit)
         self.root.focus_set()  # 确保窗口能获取焦点
+        self.click_start_pos = None  # 记录鼠标点击起始位置
+        self.has_dragged = False  # 记录是否发生过拖拽
         logger.info("初始化完成")
         
-    def toggle(self, _):
+    def toggle(self, event):
         """展开/收缩菜单"""
+        # 如果发生过拖拽，不触发菜单切换
+        if self.has_dragged:
+            return
+
         action = "展开" if self.collapsed else "收起"
         logger.info(f"菜单 {action}")
         if self.collapsed:
@@ -71,18 +84,13 @@ class Ball:
     def load_config(self):
         """加载配置文件"""
         config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config", "config.json")
-        default_config = {
-            "floatball_color": "#409eff",
-            "menu_color": "#409eff",
-            "settings_button_color": "#0080ff",
-            "exit_button_color": "#ff4d4f"
-        }
+
         try:
             with open(config_path, "r", encoding="utf-8") as f:
                 return json.load(f)
         except Exception as e:
             logger.warning(f"加载配置文件失败，使用默认配置: {e}")
-            return default_config
+            return self.default_config
 
     def expand(self):
         """展开菜单"""
@@ -108,7 +116,7 @@ class Ball:
 
         # 设置按钮
         settngs_btn = tk.Button(self.menu_win, text="设置", width=12, height=2,
-                                relief="flat", bg=self.config.get("settings_button_color", "#af5fff"), fg="white",
+                                relief="flat", bg=self.config.get("settings_button_color", "#409eff"), fg="white",
                                 command=lambda: self.run_tool(os.path.join(os.path.dirname(os.path.abspath(__file__)), "tools", "settings.py")))
         settngs_btn.pack(pady=2)
 
@@ -151,15 +159,24 @@ class Ball:
     def start_drag(self, event):
         """拖拽移动: 记录初始位置"""
         self.x0, self.y0 = event.x, event.y
+        self.click_start_pos = (event.x, event.y)
+        self.has_dragged = False  # 重置拖拽标志
        
 
     def on_drag(self, event):
         """拖拽移动: 移动窗口"""
+        self.has_dragged = True  # 标记已发生拖拽
         dx = event.x - self.x0
         dy = event.y - self.y0
         x = self.root.winfo_x() + dx
         y = self.root.winfo_y() + dy
         self.root.geometry(f"+{x}+{y}")
+
+        # 如果菜单已展开，同步移动菜单窗口
+        if self.menu_win:
+            menu_x = x - 120
+            menu_y = y
+            self.menu_win.geometry(f"+{menu_x}+{menu_y}")
 
     
     def quit(self, _=None):
