@@ -49,6 +49,24 @@ tools.json
     "音量恢复": "./tools/recovery-voice.py"
 }
 ```
+### 本项目会持续更新，欢迎大家在Issues提出意见和建议 *（由于一些技术问题，暂时还没有Release可供下载，目前只能使用源码运行）*
+
+### 常见问题（FAQ）
+Q: 双击`main.pyw`什么反应都没有。\
+A: 确保安装的是Python 3.8及以上的版本，并用`pip install -r requirements.txt`安装好了依赖库。\
+
+Q: 双击`main.pyw`报错弹窗 & 点设置报错。
+A: 确保有`tools.json`和`config/config.json`文件，若没有请手动创建并复制上文给出的两个文件的内容。
+
+Q: 随机点名点不开。\
+A: 确保`tools/names.txt`**正确输入了名字并保存**，这个文件为空会报错。\
+
+Q: 点菜单里的工具有时候什么反应都没有。\
+A: 如果没有错误弹窗，可以前往`log/running.log`里查看具体原因，也可以反馈在Issues里让我知道并处理。\
+
+Q: 开机自启动失败。\
+A: 确保自己是Windows平台，并且在设置里启用了开机自启动。若仍然无效，请按下键盘`Windows徽标键 + R`，在弹出的窗口中输入`shell:startup`，手动将`main.pyw`的**快捷方式**放入打开的文件夹中（注意一定是**快捷方式**而不是把`main.pyw`放进去），重启即可生效。
+
 ### 项目截图
 菜单收起（普通状态）
 ![普通状态](pics/ball.png)
@@ -62,4 +80,3 @@ tools.json
 ![倒计时](pics/countdown.png)
 设置
 ![设置常规](pics/set1.png)![设置外观](pics/set2.png)![设置功能](pics/set3.png)![设置关于](pics/set4.png)
-### 本项目会持续更新，欢迎大家在Issues提出意见和建议
