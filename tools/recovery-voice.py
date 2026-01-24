@@ -7,12 +7,9 @@ def set_volume_to_max():
     """
     try:
         logger.info("启动音量恢复")
-        print("正在获取音频设备...")
         # 获取默认音频设备
         devices = AudioUtilities.GetSpeakers()
-        print(f"找到音频设备: {devices.FriendlyName}")
-
-        print("正在设置音量...")
+        logger.info(f"找到音频设备: {devices.FriendlyName}")
         # 使用设备的 EndpointVolume 属性
         volume = devices.EndpointVolume
 
@@ -24,16 +21,12 @@ def set_volume_to_max():
         # 获取当前音量百分比（0.0到1.0）
         current_scalar = volume.GetMasterVolumeLevelScalar()
 
-        print("=" * 40)
-        print("音量已恢复到100%")
-        print(f"当前音量级别: {current_level:.2f} dB")
-        print(f"当前音量百分比: {current_scalar * 100:.0f}%")
-        print("=" * 40)
+        logger.info(f"当前音量级别: {current_level:.2f} dB")
+        logger.info(f"当前音量百分比: {current_scalar * 100:.0f}%")
         logger.info("音量已恢复到100%")
 
     except Exception as e:
         logger.error(f"设置音量失败: {e}")
-        print(f"设置音量失败: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -42,5 +35,4 @@ def set_volume_to_max():
 
 
 if __name__ == "__main__":
-    print("系统音量恢复工具启动...")
     set_volume_to_max()

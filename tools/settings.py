@@ -371,17 +371,17 @@ class Settings:
         info_frame.pack(pady=20, padx=20)
 
         # 版本信息
-        version_label = ttk.Label(info_frame, text="版本: 1.0", font=("Arial", 12))
+        version_label = ttk.Label(info_frame, text="版本: 1.0.0", font=("Arial", 12))
         version_label.pack(pady=10)
 
         # 作者信息（预留）
-        author_label = ttk.Label(info_frame, text="作者: 刘承沂", font=("Arial", 12))
+        author_label = ttk.Label(info_frame, text="作者: FkBlocks", font=("Arial", 12))
         author_label.pack(pady=10)
 
         # 其他信息
         desc_label = ttk.Label(
             info_frame,
-            text="悬浮球工具箱应用",
+            text="课堂悬浮球工具箱应用",
             font=("Arial", 10),
             foreground="gray"
         )
@@ -453,7 +453,7 @@ class Settings:
             return False
         try:
             startup_folder = os.path.join(os.environ['APPDATA'], 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup')
-            shortcut_path = os.path.join(startup_folder, '课堂工具箱.lnk')
+            shortcut_path = os.path.join(startup_folder, 'class-toolkit.lnk')
             return os.path.exists(shortcut_path)
         except:
             return False
@@ -471,7 +471,7 @@ class Settings:
                 from win32com.client import Dispatch
 
                 startup_folder = os.path.join(os.environ['APPDATA'], 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup')
-                shortcut_path = os.path.join(startup_folder, '课堂工具箱.lnk')
+                shortcut_path = os.path.join(startup_folder, 'class-toolkit.lnk')
                 main_path = os.path.join(self.project_root, "main.pyw")
 
                 if self.autostart_var.get():

@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import Toplevel, scrolledtext
 import random
 import os
-from PIL import Image, ImageTk
+# from PIL import Image, ImageTk
 from logger import logger
 
 class BatchRollCall:
@@ -42,18 +42,18 @@ class BatchRollCall:
         # 主窗口居中
         self.center_window(self.root, 400, 140)
 
-        # 添加水印图片到主窗口右下角
-        watermark_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figs", "light.png")
-        if os.path.exists(watermark_path):
-            try:
-                watermark_img = Image.open(watermark_path)
-                watermark_img = watermark_img.resize((120, 60), Image.Resampling.LANCZOS)
-                watermark_photo = ImageTk.PhotoImage(watermark_img)
-                watermark_label = tk.Label(self.root, image=watermark_photo)
-                watermark_label.place(relx=1.0, rely=1.0, anchor="se")
-                watermark_label.image = watermark_photo  # 保持引用
-            except Exception as e:
-                logger.warning(f"加载水印图片失败：{e}")
+        # # 添加水印图片到主窗口右下角
+        # watermark_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figs", "light.png")
+        # if os.path.exists(watermark_path):
+        #     try:
+        #         watermark_img = Image.open(watermark_path)
+        #         watermark_img = watermark_img.resize((120, 60), Image.Resampling.LANCZOS)
+        #         watermark_photo = ImageTk.PhotoImage(watermark_img)
+        #         watermark_label = tk.Label(self.root, image=watermark_photo)
+        #         watermark_label.place(relx=1.0, rely=1.0, anchor="se")
+        #         watermark_label.image = watermark_photo  # 保持引用
+        #     except Exception as e:
+        #         logger.warning(f"加载水印图片失败：{e}")
 
         self.root.mainloop()
 
@@ -95,18 +95,18 @@ class BatchRollCall:
             txt.insert("end", name + "\n")
         txt.configure(state="disabled")
 
-        # 添加水印图片到右下角
-        watermark_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figs", "light.png")
-        if os.path.exists(watermark_path):
-            try:
-                watermark_img = Image.open(watermark_path)
-                watermark_img = watermark_img.resize((120, 60), Image.Resampling.LANCZOS)
-                watermark_photo = ImageTk.PhotoImage(watermark_img)
-                watermark_label = tk.Label(top, image=watermark_photo, bg="#f7f7f7")
-                watermark_label.place(relx=1.0, rely=1.0, anchor="se")
-                watermark_label.image = watermark_photo  # 保持引用
-            except Exception as e:
-                logger.warning(f"加载水印图片失败：{e}")
+        # # 添加水印图片到右下角
+        # watermark_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figs", "light.png")
+        # if os.path.exists(watermark_path):
+        #     try:
+        #         watermark_img = Image.open(watermark_path)
+        #         watermark_img = watermark_img.resize((120, 60), Image.Resampling.LANCZOS)
+        #         watermark_photo = ImageTk.PhotoImage(watermark_img)
+        #         watermark_label = tk.Label(top, image=watermark_photo, bg="#f7f7f7")
+        #         watermark_label.place(relx=1.0, rely=1.0, anchor="se")
+        #         watermark_label.image = watermark_photo  # 保持引用
+        #     except Exception as e:
+        #         logger.warning(f"加载水印图片失败：{e}")
 
         tk.Button(top, text="再点一次",
                   command=lambda: [top.destroy(), self.roll()],

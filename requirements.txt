@@ -1,0 +1,3 @@
+pycaw==20251023
+pywin32==311
+winshell==0.6
