@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import Toplevel, scrolledtext
+from tkinter import Toplevel, scrolledtext, messagebox
 import random
 import os
 # from PIL import Image, ImageTk
@@ -13,12 +13,9 @@ class BatchRollCall:
         self.root.resizable(False, False)
         self.root.attributes("-topmost", True)
         # 读取名单
-        try:
-            self.names = self.load_names()
-            # print(self.names)
-            logger.info(f"随机点名初始化成功")
-        except Exception as e:
-            logger.info(f"随机点名初始化失败：读取文件时 {e}")
+        self.names = self.load_names()
+        # print(self.names)
+        logger.info(f"随机点名初始化成功")
 
         # 顶部输入区
         top = tk.Frame(self.root)
@@ -61,6 +58,8 @@ class BatchRollCall:
     def load_names(self):
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "names.txt")
         if not os.path.isfile(path):
+            messagebox.showerror("错误", "名单文件不存在！使用默认名单。")
+            logger.warning("名单文件不存在")
             return [f"同学{i:02d}" for i in range(1, 51)]
         with open(path, encoding="utf-8") as f:
             return [line.strip() for line in f if line.strip()]
