@@ -85,12 +85,8 @@ class Ball:
         """加载配置文件"""
         config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config", "config.json")
 
-        try:
-            with open(config_path, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception as e:
-            logger.warning(f"加载配置文件失败，使用默认配置: {e}")
-            return self.default_config
+        with open(config_path, "r", encoding="utf-8") as f:
+            return json.load(f)
 
     def expand(self):
         """展开菜单"""
@@ -115,10 +111,10 @@ class Ball:
             btn.pack(pady=2)
 
         # 设置按钮
-        settngs_btn = tk.Button(self.menu_win, text="设置", width=12, height=2,
+        settings_btn = tk.Button(self.menu_win, text="设置", width=12, height=2,
                                 relief="flat", bg=self.config.get("settings_button_color", "#409eff"), fg="white",
                                 command=lambda: self.run_tool(os.path.join(os.path.dirname(os.path.abspath(__file__)), "tools", "settings.py")))
-        settngs_btn.pack(pady=2)
+        settings_btn.pack(pady=2)
 
         # 退出按钮
         exit_btn = tk.Button(self.menu_win, text="退出", width=12, height=2,

@@ -74,17 +74,9 @@ class Settings:
         """加载配置文件"""
         config_path = os.path.join(self.project_root, "config", "config.json")
         
-        try:
-            with open(config_path, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception as e:
-            messagebox.showerror("错误", "加载配置失败: 可能是配置文件缺失导致的错误。" \
-                                 "\n使用默认配置，这将无法使用“设置”并保存配置功能。" \
-                                 "\n错误详情见日志文件: log/running.log")
+        with open(config_path, "r", encoding="utf-8") as f:
+            return json.load(f)
             
-            logger.error(f"加载配置文件失败，使用默认配置: {e}")
-            self.window.destroy()
-            return self.default_config
 
     def save_config(self):
         """保存配置文件"""

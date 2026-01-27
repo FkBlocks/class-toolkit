@@ -1,3 +1,6 @@
+import platform
+from tkinter import messagebox
+import sys
 from pycaw.pycaw import AudioUtilities
 from logger import logger
 
@@ -5,6 +8,11 @@ def set_volume_to_max():
     """
     将系统主音量设置为100%
     """
+    # 判断是否为Windows平台
+    if platform.system() != 'Windows':
+        messagebox.showerror("错误", f"{platform.system()} 系统不支持此工具，仅支持 Windows。")
+        sys.exit(1)
+    
     try:
         logger.info("启动音量恢复")
         # 获取默认音频设备
