@@ -149,6 +149,7 @@ class Ball:
             self.collapse()
             logger.info(f"运行工具：{path} 成功")
         except Exception as e:
+            messagebox.showerror("错误", f"运行工具：{path} 失败：{e}")
             logger.error(f"运行工具：{path} 失败：{e}")
 
     
@@ -166,12 +167,26 @@ class Ball:
         dy = event.y - self.y0
         x = self.root.winfo_x() + dx
         y = self.root.winfo_y() + dy
+
+        # 获取屏幕尺寸
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+
+        # 获取窗口尺寸
+        window_width = self.root.winfo_width()
+        window_height = self.root.winfo_height()
+
+        # 限制窗口在屏幕内
+        x = max(0, min(x, screen_width - window_width))
+        y = max(0, min(y, screen_height - window_height))
+
         self.root.geometry(f"+{x}+{y}")
 
         # 如果菜单已展开，同步移动菜单窗口
         if self.menu_win:
-            menu_x = x - 120
-            menu_y = y
+            menu_x = max(0, min(x - 120, screen_width - 240))
+            menu_y = max(0, min(y, screen_height - 120))  # 防止菜单窗口超出屏幕
+            
             self.menu_win.geometry(f"+{menu_x}+{menu_y}")
 
     
