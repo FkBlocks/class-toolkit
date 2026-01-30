@@ -30,7 +30,7 @@ def create_logger(clear_log=False):
         )
 
         fmt = logging.Formatter(
-            fmt="%(asctime)s | %(levelname)s | %(message)s",
+            fmt="[%(asctime)s][%(levelname)s]: %(message)s",
             datefmt="%H:%M:%S"
         )
         file_handler.setFormatter(fmt)
