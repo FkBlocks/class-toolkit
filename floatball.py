@@ -19,6 +19,10 @@ class Ball:
         self.tools = tools
         self.collapsed = True
         self.menu_win = None
+        self.animating = False
+        self.anim_step = 0
+        self.target_x = 0
+        self.menu_start_x = 0
 
         # 加载配置
         self.default_config = {
@@ -90,6 +94,10 @@ class Ball:
 
     def expand(self):
         """展开菜单"""
+        # 如果正在动画中，不重复展开
+        if self.animating:
+            return
+        
         # 重新加载配置
         self.config = self.load_config()
 
@@ -101,8 +109,19 @@ class Ball:
         self.menu_win.overrideredirect(True)
         self.menu_win.attributes("-topmost", True)
         self.menu_win.config(bg=self.config.get("menu_color", "#409eff"))
+        self.menu_win.attributes("-alpha", 0.0)  # 初始透明度为0
+        
+        # 获取悬浮球位置
         x, y = self.root.winfo_x(), self.root.winfo_y()
-        self.menu_win.geometry(f"+{x-120}+{y}")
+        
+        # 目标位置（悬浮球左侧，距离悬浮球10像素）
+        self.target_x = x - 130
+        
+        # 初始位置（悬浮球中心位置，从球内部发射）
+        self.menu_start_x = x - 30
+        
+        # 设置初始位置（从球中心开始）
+        self.menu_win.geometry(f"+{self.menu_start_x}+{y}")
 
         for name, path in self.tools.items():
             btn = tk.Button(self.menu_win, text=name, width=12, height=2,
@@ -112,7 +131,7 @@ class Ball:
 
         # 设置按钮
         settings_btn = tk.Button(self.menu_win, text="设置", width=12, height=2,
-                                relief="flat", bg=self.config.get("settings_button_color", "#409eff"), fg="white",
+                                relief="flat", bg=self.config.get("settings_button_color", "#0080ff"), fg="white",
                                 command=lambda: self.run_tool(os.path.join(os.path.dirname(os.path.abspath(__file__)), "tools", "settings.py")))
         settings_btn.pack(pady=2)
 
@@ -121,17 +140,27 @@ class Ball:
                              relief="flat", bg=self.config.get("exit_button_color", "#ff4d4f"), fg="white",
                              command=self.quit)
         exit_btn.pack(pady=2)
+        
+        # 开始展开动画
+        self.animating = True
+        self.anim_step = 0
+        self.animate_expand()
 
     def collapse(self):
         """收缩菜单"""
-        if self.menu_win:
-            self.menu_win.destroy()
-            self.menu_win = None
-        self.collapsed = True
+        if self.menu_win and not self.animating:
+            self.animating = True
+            self.anim_step = 0
+            self.menu_start_x = self.menu_win.winfo_x()
+            self.target_x = self.menu_start_x + 240  # 向右移动240像素消失
+            self.animate_collapse()
 
     
     def run_tool(self, path):
         """拉起工具，无黑框"""
+        if self.animating:
+            return  # 动画中不响应
+            
         try:
             logger.info(f"运行工具：{path}")
             # 获取当前脚本所在目录作为工作目录
@@ -182,16 +211,93 @@ class Ball:
 
         self.root.geometry(f"+{x}+{y}")
 
-        # 如果菜单已展开，同步移动菜单窗口
+        # 如果菜单已展开，同步移动菜单窗口（悬浮球左侧，距离10像素）
         if self.menu_win:
-            menu_x = max(0, min(x - 120, screen_width - 240))
+            menu_x = max(0, min(x - 130, screen_width - 130))
             menu_y = max(0, min(y, screen_height - 120))  # 防止菜单窗口超出屏幕
             
             self.menu_win.geometry(f"+{menu_x}+{menu_y}")
 
+    def animate_expand(self):
+        """展开动画：从球内发射出来 + 淡入"""
+        if not self.menu_win:
+            self.animating = False
+            return
+        
+        self.anim_step += 1
+        
+        # 使用缓动函数让动画更自然
+        progress = min(self.anim_step / 20, 1.0)  # 20帧完成动画
+        ease_progress = 1 - (1 - progress) ** 3  # 缓出效果
+        
+        # 计算当前X位置（从球中心向左移动）
+        current_x = int(self.menu_start_x + (self.target_x - self.menu_start_x) * ease_progress)
+        
+        # 计算透明度（淡入效果，前半段快速淡入）
+        alpha = min(progress * 1.5, 1.0)
+        self.menu_win.attributes("-alpha", alpha)
+        
+        # 更新位置
+        x, y = self.root.winfo_x(), self.root.winfo_y()
+        self.menu_win.geometry(f"+{current_x}+{y}")
+        
+        if self.anim_step < 20:
+            # 继续动画
+            self.root.after(16, self.animate_expand)  # 约60fps
+        else:
+            # 动画完成
+            self.menu_win.attributes("-alpha", 1.0)  # 确保完全显示
+            self.animating = False
+            logger.info("菜单展开动画完成")
+
+    def animate_collapse(self):
+        """收缩动画：收回到球内 + 淡出"""
+        if not self.menu_win:
+            self.animating = False
+            self.collapsed = True
+            return
+        
+        self.anim_step += 1
+        
+        # 使用缓动函数让动画更自然
+        progress = min(self.anim_step / 20, 1.0)  # 20帧完成动画
+        ease_progress = progress ** 3  # 缓入效果
+        
+        # 获取悬浮球中心位置
+        x, y = self.root.winfo_x(), self.root.winfo_y()
+        ball_center_x = x - 30
+        
+        # 计算当前X位置（从当前位置回到球中心）
+        current_x = int(self.menu_start_x + (ball_center_x - self.menu_start_x) * ease_progress)
+        
+        # 计算透明度（淡出效果，后半段快速淡出）
+        alpha = 1.0 - progress * 1.5
+        if alpha < 0:
+            alpha = 0
+        self.menu_win.attributes("-alpha", alpha)
+        
+        # 更新位置
+        self.menu_win.geometry(f"+{current_x}+{y}")
+        
+        if self.anim_step < 20:
+            # 继续动画
+            self.root.after(16, self.animate_collapse)
+        else:
+            # 动画完成，销毁菜单
+            if self.menu_win:
+                self.menu_win.destroy()
+                self.menu_win = None
+            self.animating = False
+            self.collapsed = True
+            logger.info("菜单收起动画完成")
+
     
     def quit(self, _=None):
         """退出程序"""
+        if self.animating:
+            # 如果正在动画中，等待动画完成
+            return
+            
         if self.menu_win:
             # 弹窗确认是否关闭
             # 设置：退出时询问，config.json: "ask_exit": true

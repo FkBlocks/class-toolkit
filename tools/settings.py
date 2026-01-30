@@ -348,7 +348,7 @@ class Settings:
         info_frame.pack(pady=20, padx=20)
 
         # 版本信息
-        version_label = ttk.Label(info_frame, text="版本: 1.1.0", font=("Arial", 12))
+        version_label = ttk.Label(info_frame, text="版本: 1.2.0", font=("Arial", 12))
         version_label.pack(pady=10)
 
         # 作者信息（预留）
