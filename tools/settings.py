@@ -209,21 +209,6 @@ class Settings:
         except Exception as e:
             logger.warning(f"打开日志文件失败: {e}")
             messagebox.showwarning("错误", "打开日志文件失败")
-    
-
-    # def add_log_button(self):
-    #     """在右侧面板底部添加日志按钮"""
-    #     bottom_frame = ttk.Frame(self.right_panel)
-    #     bottom_frame.pack(side=tk.BOTTOM, fill=tk.X, pady=10, padx=20)
-
-    #     log_btn = ttk.Button(
-    #         bottom_frame,
-    #         text="查看日志",
-    #         command=self.show_log,
-    #         width=15
-    #     )
-    #     log_btn.pack(side=tk.LEFT)
-
         
     def show_appearance_settings(self):
         """显示外观设置"""

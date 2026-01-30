@@ -1,7 +1,5 @@
 import tkinter as tk
 import threading
-import os
-# from PIL import Image, ImageTk
 from logger import logger
 
 
@@ -58,19 +56,6 @@ class CountDownTimer:
 
         self.center_window(900, 500)
         logger.info("倒计时窗口启动成功")
-        # # 添加水印图片到右边靠上位置
-        # watermark_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figs", "light.png")
-        # if os.path.exists(watermark_path):
-        #     try:
-        #         watermark_img = Image.open(watermark_path)
-        #         watermark_img = watermark_img.resize((120, 60), Image.Resampling.LANCZOS)
-        #         watermark_photo = ImageTk.PhotoImage(watermark_img)
-        #         watermark_label = tk.Label(self.root, image=watermark_photo)
-        #         watermark_label.place(relx=1.0, rely=0.35, anchor="ne")
-        #         watermark_label.image = watermark_photo  # 保持引用
-        #     except Exception as e:
-        #         print(f"加载水印图片失败：{e}")
-        #         logger.error(f"加载水印图片失败：{e}")
 
         self.root.mainloop()
 
