@@ -6,6 +6,7 @@ import platform
 import json
 import os
 from tools.logger import logger
+from tools.consts import DEFAULT_CONFIG
 
 
 class Ball:
@@ -25,13 +26,7 @@ class Ball:
         self.menu_start_x = 0
 
         # 加载配置
-        self.default_config = {
-            "settings_button_color": "#0080ff",
-            "floatball_color": "#409eff",
-            "menu_color": "#409eff",
-            "exit_button_color": "#ff4d4f",
-            "ask_exit": True
-        }
+        self.default_config = DEFAULT_CONFIG
         self.config = self.load_config()
 
         self.root = tk.Tk()
@@ -71,7 +66,77 @@ class Ball:
         self.click_start_pos = None  # 记录鼠标点击起始位置
         self.has_dragged = False  # 记录是否发生过拖拽
         logger.info("初始化完成")
-        
+
+        if self.config.get("show_welcome", True):
+            self.show_welcome()
+
+    def show_welcome(self):
+        """显示欢迎弹窗"""
+        # print("创建欢迎弹窗...")
+
+        # 先等待悬浮球窗口完全显示
+        def create_welcome_dialog():
+            welcome_win = tk.Toplevel(self.root)
+            welcome_win.overrideredirect(True)
+            welcome_win.attributes("-topmost", True)
+            welcome_win.attributes("-alpha", 0.0)  # 初始透明度为0
+
+            width, height = 100, 35
+            ball_x = self.root.winfo_x()
+            ball_y = self.root.winfo_y()
+            x = ball_x + 30 - width // 2
+            y = ball_y - height - 10
+
+            # print(f"悬浮球位置: ({ball_x}, {ball_y})")
+            # print(f"弹窗位置: ({x}, {y})")
+
+            welcome_win.geometry(f"{width}x{height}+{x}+{y}")
+
+            # 背景
+            bg_frame = tk.Frame(welcome_win, bg="#222222", highlightthickness=1, highlightbackground="#e0e0e0")
+            bg_frame.pack(fill=tk.BOTH, expand=True)
+
+            # 内容区域
+            content_frame = tk.Frame(bg_frame, bg="#222222")
+            content_frame.pack()
+
+            # 欢迎文字
+            tk.Label(content_frame, text="欢迎回来", font=("Microsoft YaHei", 14), 
+                     bg="#222222", fg="#eeeeee").pack()
+
+            # 淡入动画
+            self._fade_in(welcome_win, 0)
+
+            # 2秒后开始淡出
+            welcome_win.after(2000, lambda: self._fade_out(welcome_win, 1.0))
+
+            # print("欢迎弹窗创建完成")
+
+        # 延迟150ms后创建弹窗
+        self.root.after(150, create_welcome_dialog)
+
+    def _fade_in(self, window, alpha):
+        """淡入动画"""
+        alpha += 0.1
+        # print(f"淡入动画: alpha = {alpha}")  # 调试输出
+        if alpha >= 0.7:
+            window.attributes("-alpha", 0.7)
+            # print("淡入完成")  # 调试输出
+            return
+        window.attributes("-alpha", alpha)
+        window.after(30, lambda: self._fade_in(window, alpha))
+
+    def _fade_out(self, window, alpha):
+        """淡出动画"""
+        alpha -= 0.1
+        # print(f"淡出动画: alpha = {alpha}")  # 调试输出
+        if alpha <= 0.0:
+            window.destroy()
+            # print("淡出完成")  # 调试输出
+            return
+        window.attributes("-alpha", alpha)
+        window.after(30, lambda: self._fade_out(window, alpha))
+
     def toggle(self, event):
         """展开/收缩菜单"""
         # 如果发生过拖拽，不触发菜单切换

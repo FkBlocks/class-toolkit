@@ -7,6 +7,7 @@ import subprocess
 import platform
 import copy
 from logger import logger
+from consts import DEFAULT_CONFIG
 
 
 class Settings:
@@ -22,13 +23,7 @@ class Settings:
         self.center_window(self.window, 800, 600)
 
         # 加载配置
-        self.default_config = {
-            "settings_button_color": "#0080ff",
-            "floatball_color": "#409eff",
-            "menu_color": "#409eff",
-            "exit_button_color": "#ff4d4f",
-            "ask_exit": True
-        }
+        self.default_config = DEFAULT_CONFIG
         self.config = self.load_config()
         self.tools = self.load_tools()
 
@@ -125,14 +120,14 @@ class Settings:
             widget.destroy()
 
     def add_apply_button(self):
-        """在右侧面板底部添加应用按钮"""
+        """在右侧面板底部添加保存设置按钮"""
         bottom_frame = ttk.Frame(self.right_panel)
         bottom_frame.pack(side=tk.BOTTOM, fill=tk.X, pady=10, padx=20)
 
         apply_btn = ttk.Button(
             bottom_frame,
-            text="应用",
-            command=self.apply_settings,
+            text="保存设置",
+            command=self.save_settings,
             width=15
         )
         apply_btn.pack(side=tk.RIGHT)
@@ -170,6 +165,20 @@ class Settings:
         )
         desc_label.pack(side=tk.LEFT, padx=5)
 
+        #  是否显示欢迎信息
+        if_show_welcome = self.config.get("show_welcome", True)
+        self.show_welcome_var = tk.BooleanVar(value=if_show_welcome)
+        show_welcome_frame = ttk.Frame(self.right_panel)
+        show_welcome_frame.pack(pady=10, fill=tk.X, padx=20)
+
+        show_welcome_check = ttk.Checkbutton(
+            show_welcome_frame,
+            text="启动显示欢迎信息",
+            variable=self.show_welcome_var,
+            command=self.toggle_show_welcome
+        )
+        show_welcome_check.pack(side=tk.LEFT, padx=5)
+
         # 退出时是否询问
         if_ask = self.config.get("ask_exit", True)
         self.ask_exit_var = tk.BooleanVar(value=if_ask)
@@ -183,7 +192,6 @@ class Settings:
             command=self.toggle_ask_exit
         )
         ask_exit_check.pack(side=tk.LEFT, padx=5)
-
 
         # 显示日志按钮
         show_log_btn = ttk.Button(
@@ -202,7 +210,12 @@ class Settings:
             width=20
         )
         clear_log_btn.pack(pady=10)
-    
+
+    def toggle_show_welcome(self):
+        """切换显示欢迎信息"""
+        self.config["show_welcome"] = self.show_welcome_var.get()
+        self.save_config()
+
     def toggle_ask_exit(self):
         """切换退出时询问设置"""
         self.config["ask_exit"] = self.ask_exit_var.get()
@@ -503,11 +516,11 @@ class Settings:
             self.autostart_var.set(False)
             logger.error(f"设置开机自启动失败：{e}")
 
-    def apply_settings(self):
+    def save_settings(self):
         """应用设置"""
         self.save_config()
         self.save_tools()
-        # messagebox.showinfo("成功", "设置已应用，请点击悬浮球查看效果")
+        messagebox.showinfo("成功", "设置已保存")
 
     def restore_default_settings(self):
         """恢复默认设置"""

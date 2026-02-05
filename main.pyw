@@ -5,6 +5,7 @@ import os
 import sys
 from floatball import Ball
 from tools.logger import create_logger
+from tools.consts import DEFAULT_CONFIG
 
 
 def ensure_config(project_root):
@@ -14,13 +15,7 @@ def ensure_config(project_root):
     """
     cfg_dir = os.path.join(project_root, "config")
     cfg_path = os.path.join(cfg_dir, "config.json")
-    default_config = {
-        "settings_button_color": "#0080ff",
-        "floatball_color": "#409eff",
-        "menu_color": "#409eff",
-        "exit_button_color": "#ff4d4f",
-        "ask_exit": True
-    }
+    default_config = DEFAULT_CONFIG
     os.makedirs(cfg_dir, exist_ok=True)
     if not os.path.exists(cfg_path):
         with open(cfg_path, "w", encoding="utf-8") as f:

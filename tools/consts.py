@@ -1,0 +1,9 @@
+# 默认配置
+DEFAULT_CONFIG = {
+        "settings_button_color": "#0080ff",
+        "floatball_color": "#409eff",
+        "menu_color": "#409eff",
+        "exit_button_color": "#ff4d4f",
+        "ask_exit": True,
+        "show_welcome": True
+}
