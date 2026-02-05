@@ -214,11 +214,13 @@ class Settings:
     def toggle_show_welcome(self):
         """切换显示欢迎信息"""
         self.config["show_welcome"] = self.show_welcome_var.get()
+        logger.info(f"设置: 启动显示欢迎信息设置为{self.config['show_welcome']}")
         self.save_config()
 
     def toggle_ask_exit(self):
         """切换退出时询问设置"""
         self.config["ask_exit"] = self.ask_exit_var.get()
+        logger.info(f"设置: 退出时询问设置为{self.config['ask_exit']}")
         self.save_config()
         
     def show_log(self):
@@ -424,9 +426,11 @@ class Settings:
 
         if not name or not path:
             messagebox.showwarning("警告", "请填写完整的工具信息")
+            logger.warning("添加工具失败: 工具信息不完整")
             return
 
         if name in self.tools:
+            logger.warning(f"添加工具失败: {name} 已存在")
             messagebox.showwarning("警告", "该工具名称已存在")
             return
 
@@ -437,7 +441,8 @@ class Settings:
         name_entry.delete(0, tk.END)
         path_entry.delete(0, tk.END)
 
-        messagebox.showinfo("成功", "工具添加成功")
+        logger.info(f"添加工具: {name} - {path} 成功")
+        messagebox.showinfo("成功", "工具添加成功，重启后生效")
 
     def delete_tool(self):
         """删除工具"""
@@ -451,7 +456,8 @@ class Settings:
         self.save_tools()
         self.refresh_tools_list()
 
-        messagebox.showinfo("成功", "工具删除成功")
+        logger.info(f"删除工具: {tool_name} 成功")
+        messagebox.showinfo("成功", "工具删除成功，重启后生效")
 
     def refresh_tools_list(self):
         """刷新工具列表"""

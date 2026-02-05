@@ -144,7 +144,7 @@ class Ball:
             return
 
         action = "展开" if self.collapsed else "收起"
-        logger.info(f"菜单 {action}")
+        # logger.info(f"菜单 {action}")
         if self.collapsed:
             self.expand()
         else:
@@ -227,7 +227,7 @@ class Ball:
             return  # 动画中不响应
             
         try:
-            logger.info(f"运行工具：{path}")
+            # logger.info(f"运行工具：{path}")
             # 获取当前脚本所在目录作为工作目录
             cwd = os.path.dirname(os.path.abspath(__file__))
             if path.endswith(".py"):
@@ -313,7 +313,7 @@ class Ball:
             # 动画完成
             self.menu_win.attributes("-alpha", 1.0)  # 确保完全显示
             self.animating = False
-            logger.info("菜单展开动画完成")
+            # logger.info("菜单展开动画完成")
 
     def animate_collapse(self):
         """收缩动画：收回到球内 + 淡出"""
@@ -354,7 +354,7 @@ class Ball:
                 self.menu_win = None
             self.animating = False
             self.collapsed = True
-            logger.info("菜单收起动画完成")
+            # logger.info("菜单收起动画完成")
 
     
     def quit(self, _=None):
