@@ -13,6 +13,9 @@ class Settings:
     def __init__(self):
         # 获取项目根目录
         self.project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+        # 获取日志文件路径
+        self.log_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "log", "running.log")
         
         self.window = tk.Tk()
         self.window.title("设置")
@@ -190,6 +193,15 @@ class Settings:
             width=20
         )
         show_log_btn.pack(pady=10)
+
+        # 清空日志按钮
+        clear_log_btn = ttk.Button(
+            self.right_panel,
+            text="清空日志",
+            command=self.clear_log,
+            width=20
+        )
+        clear_log_btn.pack(pady=10)
     
     def toggle_ask_exit(self):
         """切换退出时询问设置"""
@@ -198,17 +210,27 @@ class Settings:
         
     def show_log(self):
         """显示日志"""
-        log_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "log", "running.log")
         try:
             if platform.system() == "Windows":
-                subprocess.Popen(['notepad.exe', log_path])
+                subprocess.Popen(['notepad.exe', self.log_path])
             elif platform.system() == "Darwin":
-                subprocess.Popen(['open', 'a', 'TextEdit', log_path])
+                subprocess.Popen(['open', 'a', 'TextEdit', self.log_path])
             elif platform.system() == "Linux":
-                subprocess.Popen(['xdg-open', log_path])
+                subprocess.Popen(['xdg-open', self.log_path])
         except Exception as e:
             logger.warning(f"打开日志文件失败: {e}")
             messagebox.showwarning("错误", "打开日志文件失败")
+
+    def clear_log(self):
+        """清空日志"""
+        try:
+            with open(self.log_path, "w", encoding="utf-8") as f:
+                f.write("")
+            logger.info("手动清空日志")
+            messagebox.showinfo("成功", "日志文件已清空")
+        except Exception as e:
+            messagebox.showerror("错误", f"清空日志文件失败: {self.log_path}")
+            logger.error(f"清空日志文件失败: {e}")
         
     def show_appearance_settings(self):
         """显示外观设置"""
