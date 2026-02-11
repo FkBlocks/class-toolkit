@@ -94,7 +94,7 @@ class BatchRollCall:
                 logger.warning(f"用户输入点名数超过名单总数: {n}/{len(self.names)}")
                 return
             else:
-                students = [f"{i+1:02d}" for i in range(1, total + 1)]
+                students = [f"{i+1:02d}" for i in range(total)]
                 selected = random.sample(students, n)
                 self.show_result(selected)
 
