@@ -70,15 +70,15 @@ Q: 开机自启动失败。\
 A: 确保自己是Windows平台，并且在设置里启用了开机自启动。若仍然无效，请按下键盘`Windows徽标键 + R`，在弹出的窗口中输入`shell:startup`，手动将`main.pyw`的**快捷方式**放入打开的文件夹中（注意一定是**快捷方式**而不是把`main.pyw`放进去），重启即可生效。
 
 ### 项目截图
-菜单收起（普通状态）
-![普通状态](pics/ball.png)
-菜单展开
-![菜单展开](pics/open.png)
-随机点名
-![随机点名](pics/call.png)
-点名结果
-![点名结果](pics/result.png)
-倒计时
-![倒计时](pics/countdown.png)
-设置
+菜单收起（普通状态）\
+![普通状态](pics/ball.png)\
+菜单展开\
+![菜单展开](pics/open.png)\
+随机点名\
+![随机点名](pics/call.png)\
+点名结果\
+![点名结果](pics/result.png)\
+倒计时\
+![倒计时](pics/countdown.png)\
+设置\
 ![设置常规](pics/set1.png)![设置外观](pics/set2.png)![设置功能](pics/set3.png)![设置关于](pics/set4.png)
