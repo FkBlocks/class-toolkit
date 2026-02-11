@@ -3,10 +3,21 @@ from tkinter import messagebox
 import json
 import os
 import sys
+import platform
 from floatball import Ball
 from tools.logger import create_logger
 from tools.consts import DEFAULT_CONFIG
 
+
+def check_platform():
+    """
+    检查运行平台是否是Windows，
+    是继续运行，不是弹窗提示并退出
+    """
+
+    if platform.system() != "Windows":
+        messagebox.showerror("错误", f"当前系统为 {platform.system()}，仅支持 Windows 平台运行。")
+        sys.exit(1)
 
 def ensure_config(project_root):
     """
@@ -45,4 +56,5 @@ def main():
 
 
 if __name__ == "__main__":
+    check_platform()
     main()

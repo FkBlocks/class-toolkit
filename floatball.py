@@ -42,15 +42,9 @@ class Ball:
 
 
         # 平台兼容
-        logger.info(f"当前平台: {platform.system()}")
-        if platform.system() == 'Windows':
-            self.root.attributes("-transparentcolor", "white")
-            self.root.config(bg="white")
-            canvas_bg = "white"
-        else:
-            self.root.attributes("-alpha", 0.7)
-            self.root.config(bg="black")
-            canvas_bg = "black"
+        self.root.attributes("-transparentcolor", "white")
+        self.root.config(bg="white")
+        canvas_bg = "white"
 
         # 圆球画布
         self.canvas = tk.Canvas(self.root, width=60, height=60,
@@ -231,17 +225,12 @@ class Ball:
             # 获取当前脚本所在目录作为工作目录
             cwd = os.path.dirname(os.path.abspath(__file__))
             if path.endswith(".py"):
-                if platform.system() == 'Windows':
-                    subprocess.Popen([sys.executable, path], creationflags=subprocess.CREATE_NO_WINDOW, cwd=cwd)
-                else:
-                    subprocess.Popen([sys.executable, path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, cwd=cwd)
+                subprocess.Popen([sys.executable, path], creationflags=subprocess.CREATE_NO_WINDOW, cwd=cwd)
             else:
-                if platform.system() == 'Windows':
-                    subprocess.Popen([path], creationflags=subprocess.CREATE_NO_WINDOW, cwd=cwd)
-                else:
-                    subprocess.Popen([path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, cwd=cwd)
+                subprocess.Popen([path], creationflags=subprocess.CREATE_NO_WINDOW, cwd=cwd)
             self.collapse()
             logger.info(f"运行工具：{path} 成功")
+
         except Exception as e:
             messagebox.showerror("错误", f"运行工具：{path} 失败：{e}")
             logger.error(f"运行工具：{path} 失败：{e}")

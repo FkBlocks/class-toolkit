@@ -226,12 +226,8 @@ class Settings:
     def show_log(self):
         """显示日志"""
         try:
-            if platform.system() == "Windows":
-                subprocess.Popen(['notepad.exe', self.log_path])
-            elif platform.system() == "Darwin":
-                subprocess.Popen(['open', 'a', 'TextEdit', self.log_path])
-            elif platform.system() == "Linux":
-                subprocess.Popen(['xdg-open', self.log_path])
+            subprocess.Popen(['notepad.exe', self.log_path])
+
         except Exception as e:
             logger.warning(f"打开日志文件失败: {e}")
             messagebox.showwarning("错误", "打开日志文件失败")
