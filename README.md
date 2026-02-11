@@ -46,9 +46,9 @@ config.json
 tools.json
 ```json
 {
-    "随机点名": "./tools/random-call.py",
-    "倒计时": "./tools/count-down.py",
-    "音量恢复": "./tools/recovery-voice.py"
+    "随机点名": "./tools/random_call.py",
+    "倒计时": "./tools/count_down.py",
+    "音量恢复": "./tools/recovery_voice.py"
 }
 ```
 ### 本项目会持续更新，欢迎大家在Issues提出意见和建议
