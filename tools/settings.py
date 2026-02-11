@@ -88,7 +88,7 @@ class Settings:
         try:
             with open(tools_path, "r", encoding="utf-8") as f:
                 return json.load(f)
-        except:
+        except Exception as e:
             return {}
 
     def save_tools(self):

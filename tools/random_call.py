@@ -5,8 +5,8 @@ import os
 from logger import logger
 
 class BatchRollCall:
+    """批量随机点名工具"""
     def __init__(self):
-        
         self.root = tk.Tk()
         self.root.title("批量随机点名")
         self.root.resizable(False, False)
@@ -14,7 +14,7 @@ class BatchRollCall:
         # 读取名单
         self.names = self.load_names()
         # print(self.names)
-        logger.info(f"随机点名初始化成功")
+        logger.info("随机点名初始化成功")
 
         # 顶部输入区
         top = tk.Frame(self.root)
@@ -42,6 +42,7 @@ class BatchRollCall:
 
     # ---------- 工具方法 ----------
     def load_names(self):
+        """加载名单"""
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "names.txt")
         if not os.path.isfile(path):
             messagebox.showerror("错误", "名单文件不存在！使用默认名单。")
@@ -51,6 +52,7 @@ class BatchRollCall:
             return [line.strip() for line in f if line.strip()]
 
     def center_window(self, window, width, height):
+        """居中创建窗口"""
         screen_w = window.winfo_screenwidth()
         screen_h = window.winfo_screenheight()
         x = (screen_w - width) // 2
@@ -58,6 +60,7 @@ class BatchRollCall:
         window.geometry(f"{width}x{height}+{x}+{y}")
 
     def roll(self):
+        """点名方法"""
         n = self.count_var.get()
         if n > len(self.names):
             self.status.config(text="人数超过名单总数！")
@@ -67,6 +70,7 @@ class BatchRollCall:
         self.show_result(selected)
 
     def show_result(self, selected):
+        """显示结果窗口"""
         top = Toplevel(self.root)
         top.title("点名结果")
         top.attributes("-topmost", True)   # 弹窗置顶
