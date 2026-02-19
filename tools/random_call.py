@@ -56,7 +56,7 @@ class BatchRollCall:
     # ---------- 工具方法 ----------
     def load_names(self):
         """加载名单"""
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "names.txt")
+        path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "files", "names.txt")
         if not os.path.isfile(path):
             messagebox.showerror("错误", "名单文件不存在！仅支持学号模式")
             logger.warning("名单文件不存在")
