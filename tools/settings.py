@@ -14,7 +14,12 @@ from consts import DEFAULT_CONFIG
 class Settings:
     def __init__(self):
         # 获取项目根目录
-        self.project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        if getattr(sys, 'frozen', False):
+            # 打包环境：使用 exe 所在目录作为根目录
+            self.project_root = os.path.dirname(sys.executable)
+        else:
+            # 开发环境：使用脚本所在目录的父目录
+            self.project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
         # 获取日志文件路径
         self.log_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "log", "running.log")

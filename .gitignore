@@ -45,3 +45,4 @@ Thumbs.db
 
 # others
 tool/names.txt
+*.spec

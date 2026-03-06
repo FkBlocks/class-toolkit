@@ -96,7 +96,14 @@ class BatchRollCall(QWidget):
     # 工具方法
     def load_names(self):
         """加载名单，与 Tkinter 版本逻辑相同"""
-        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        # 获取项目根目录
+        if getattr(sys, 'frozen', False):
+            # 打包环境：使用 exe 所在目录作为根目录
+            base_dir = os.path.dirname(sys.executable)
+        else:
+            # 开发环境：使用脚本所在目录的父目录
+            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        
         path = os.path.join(base_dir, "files", "names.txt")
         if not os.path.isfile(path):
             # 文件不存在时生成默认名单（仅用于演示）

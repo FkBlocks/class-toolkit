@@ -33,7 +33,13 @@ def ensure_config(project_root):
             json.dump(default_config, f, indent=4, ensure_ascii=False)
 
 # 获取项目根目录
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+if getattr(sys, 'frozen', False):
+    # 打包环境：使用 exe 所在目录作为根目录
+    PROJECT_ROOT = os.path.dirname(sys.executable)
+else:
+    # 开发环境：使用脚本所在目录
+    PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
 # 确保配置文件存在并加载
 ensure_config(PROJECT_ROOT)
 

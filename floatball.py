@@ -147,7 +147,15 @@ class Ball:
 
     def load_config(self):
         """加载配置文件"""
-        config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config", "config.json")
+        # 获取项目根目录
+        if getattr(sys, 'frozen', False):
+            # 打包环境：使用 exe 所在目录作为根目录
+            project_root = os.path.dirname(sys.executable)
+        else:
+            # 开发环境：使用脚本所在目录
+            project_root = os.path.dirname(os.path.abspath(__file__))
+        
+        config_path = os.path.join(project_root, "config", "config.json")
 
         with open(config_path, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -192,7 +200,7 @@ class Ball:
         # 设置按钮
         settings_btn = tk.Button(self.menu_win, text="设置", width=12, height=2,
                                 relief="flat", bg=self.config.get("settings_button_color", "#0080ff"), fg="white",
-                                command=lambda: self.run_tool(os.path.join(os.path.dirname(os.path.abspath(__file__)), "tools", "settings.py")))
+                                command=lambda: self.run_tool("./tools/settings.py"))
         settings_btn.pack(pady=2)
 
         # 退出按钮
@@ -223,12 +231,51 @@ class Ball:
             
         try:
             # logger.info(f"运行工具：{path}")
-            # 获取当前脚本所在目录作为工作目录
-            cwd = os.path.dirname(os.path.abspath(__file__))
-            if path.endswith(".py"):
-                subprocess.Popen([sys.executable, path], creationflags=subprocess.CREATE_NO_WINDOW, cwd=cwd)
+            
+            # 获取项目根目录
+            if getattr(sys, 'frozen', False):
+                # 打包环境：使用 exe 所在目录作为根目录
+                project_root = os.path.dirname(sys.executable)
             else:
-                subprocess.Popen([path], creationflags=subprocess.CREATE_NO_WINDOW, cwd=cwd)
+                # 开发环境：使用脚本所在目录
+                project_root = os.path.dirname(os.path.abspath(__file__))
+            
+            # 转换为绝对路径（移除开头的 ./ 或 .\）
+            if not os.path.isabs(path):
+                # 移除开头的 ./ 或 .\
+                clean_path = path.lstrip('./').lstrip('.\\')
+                abs_path = os.path.join(project_root, clean_path)
+            else:
+                abs_path = path
+            
+            # 检查文件是否存在
+            if not os.path.exists(abs_path):
+                raise Exception(f"工具文件不存在: {abs_path}")
+            
+            if path.endswith(".py"):
+                # 检测是否在 PyInstaller 打包环境中
+                if getattr(sys, 'frozen', False):
+                    # 打包环境：需要特殊处理
+                    # 找到 Python 解释器路径
+                    python_exe = sys.executable
+                    # 如果是打包的 exe，尝试使用系统 Python
+                    if python_exe.endswith('.exe') and not python_exe.lower().endswith('python.exe'):
+                        # 这是打包的 exe，需要找系统 Python
+                        import shutil
+                        python_exe = shutil.which('python')
+                        if not python_exe:
+                            python_exe = shutil.which('python3')
+                        if not python_exe:
+                            raise Exception("未找到 Python 解释器，无法运行工具")
+                    
+                    # 使用系统 Python 运行工具脚本
+                    subprocess.Popen([python_exe, abs_path], creationflags=subprocess.CREATE_NO_WINDOW, cwd=project_root)
+                else:
+                    # 开发环境：使用 sys.executable
+                    subprocess.Popen([sys.executable, abs_path], creationflags=subprocess.CREATE_NO_WINDOW, cwd=project_root)
+            else:
+                subprocess.Popen([abs_path], creationflags=subprocess.CREATE_NO_WINDOW, cwd=project_root)
+            
             self.collapse()
             logger.info(f"运行工具：{path} 成功")
 
