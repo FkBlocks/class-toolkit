@@ -1,12 +1,12 @@
 import sys
 import os
 import random
-from logger import logger  # 假设您已有日志模块
+from logger import logger
 from PyQt6.QtWidgets import (QApplication, QWidget, QLabel, QSpinBox,
                              QPushButton, QRadioButton, QVBoxLayout,
                              QHBoxLayout, QButtonGroup, QDialog, QTextEdit)
-from PyQt6.QtCore import Qt, QRect
-from PyQt6.QtGui import QFont, QScreen
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QFont
 
 
 class BatchRollCall(QWidget):

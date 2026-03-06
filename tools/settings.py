@@ -1,3 +1,4 @@
+# TODO: 重构为PyQt6实现
 import tkinter as tk
 from tkinter import ttk, colorchooser, messagebox, filedialog
 import json

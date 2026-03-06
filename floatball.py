@@ -1,3 +1,4 @@
+# TODO: 在'tools/'下所有工具完成PyQt6重构后，重构此文件为PyQt6实现
 import tkinter as tk
 from tkinter import messagebox
 import subprocess
