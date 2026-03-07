@@ -59,5 +59,4 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='pics/ball.png',  # 应用图标
 )
