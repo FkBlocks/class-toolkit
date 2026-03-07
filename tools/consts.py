@@ -23,3 +23,4 @@ DEFAULT_CONFIG = {
         "ask_exit": True,
         "show_welcome": True
 }
+VERSION = "1.0.0"

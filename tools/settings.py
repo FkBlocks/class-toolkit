@@ -24,7 +24,7 @@ import subprocess
 import platform
 import copy
 from logger import logger
-from consts import DEFAULT_CONFIG
+from consts import DEFAULT_CONFIG, VERSION
 
 
 class Settings:
@@ -403,7 +403,7 @@ class Settings:
         info_frame.pack(pady=20, padx=20)
 
         # 版本信息
-        version_label = ttk.Label(info_frame, text="版本: 26.2.2", font=("Arial", 12))
+        version_label = ttk.Label(info_frame, text=f"版本: {VERSION}", font=("Arial", 12))
         version_label.pack(pady=10)
 
         # 作者信息（预留）
