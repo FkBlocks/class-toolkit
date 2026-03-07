@@ -1,7 +1,7 @@
 # 课堂工具箱
 ## 适用于大屏触摸一体机的悬浮球课堂工具箱
 ## 让课堂和互动无缝衔接
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 
 ### 注意：**只支持Windows平台！！！**
 

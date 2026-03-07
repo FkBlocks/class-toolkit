@@ -1,3 +1,19 @@
+# A float ball class toolkit suitable for large-screen touch all-in-one machines
+# Copyright (C) 2026 FkBlocks
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 # TODO: 在'tools/'下所有工具完成PyQt6重构后，重构此文件为PyQt6实现
 import tkinter as tk
 from tkinter import messagebox
