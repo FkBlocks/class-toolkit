@@ -495,50 +495,85 @@ class Settings:
             return False
 
     def toggle_autostart(self):
-        """切换开机自启动状态"""
         if platform.system() != 'Windows':
             messagebox.showwarning("提示", "开机自启动功能仅支持Windows系统")
             self.autostart_var.set(False)
             return
 
+        logger.info("=== 设置开机自启动 ===")
+        logger.info(f"当前模块: {__file__}")
+        logger.info(f"sys.frozen: {getattr(sys, 'frozen', False)}")
+        logger.info(f"sys.argv[0]: {sys.argv[0]}")
+        logger.info(f"self.project_root: {self.project_root}")
+
         try:
-            if platform.system() == 'Windows':
-                import winshell
-                from win32com.client import Dispatch
+            from win32com.client import Dispatch
+        except ImportError as e:
+            messagebox.showerror("错误", "缺少必要的库，请安装 pywin32")
+            logger.error(f"导入失败: {e}")
+            self.autostart_var.set(False)
+            return
 
-                startup_folder = os.path.join(os.environ['APPDATA'], 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup')
-                shortcut_path = os.path.join(startup_folder, 'class-toolkit.lnk')
-                main_path = os.path.join(self.project_root, "main.pyw")
+        startup_folder = os.path.join(os.environ['APPDATA'], 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup')
+        shortcut_path = os.path.join(startup_folder, 'class-toolkit.lnk')
 
-                if self.autostart_var.get():
-                    # 创建快捷方式
-                    shell = Dispatch('WScript.Shell')
-                    shortcut = shell.CreateShortCut(shortcut_path)
-                    shortcut.Targetpath = sys.executable
-                    shortcut.Arguments = f'"{main_path}"'
-                    shortcut.WorkingDirectory = self.project_root
-                    shortcut.save()
-                    messagebox.showinfo("成功", "已设置开机自启动")
-                    logger.info("已设置开机自启动")
-                else:
-                    # 删除快捷方式
-                    if os.path.exists(shortcut_path):
-                        os.remove(shortcut_path)
-                    messagebox.showinfo("成功", "已取消开机自启动")
-                    logger.info("已取消开机自启动")
+        if self.autostart_var.get():
+            # ---------- 增强的环境判断 ----------
+            # 1. 如果 sys.frozen 为 True，直接使用 sys.argv[0]
+            if getattr(sys, 'frozen', False):
+                target = os.path.abspath(sys.argv[0])
+                args = ""
+                logger.info("根据 sys.frozen 判断为打包环境")
             else:
+                # 2. 否则，检查 self.project_root 下是否存在 class-toolkit.exe
+                exe_path = os.path.join(self.project_root, "class-toolkit.exe")
+                if os.path.exists(exe_path):
+                    target = exe_path
+                    args = ""
+                    logger.info("通过 EXE 文件存在判断为打包环境，使用 EXE 路径")
+                else:
+                    # 3. 真正的开发环境
+                    target = sys.executable
+                    main_path = os.path.join(self.project_root, "main.pyw")
+                    args = f'"{main_path}"'
+                    logger.info("判断为开发环境")
+            # -----------------------------------
+
+            logger.info(f"目标路径: {target}")
+            logger.info(f"参数: {args}")
+
+            try:
+                shell = Dispatch('WScript.Shell')
+                shortcut = shell.CreateShortCut(shortcut_path)
+                shortcut.Targetpath = target
+                shortcut.Arguments = args
+                shortcut.WorkingDirectory = self.project_root
+                shortcut.Save()
+                logger.info(f"快捷方式已创建: {shortcut_path} -> {target}")
+
+                # 验证
+                verify = shell.CreateShortCut(shortcut_path)
+                if verify.Targetpath.lower() != target.lower():
+                    logger.warning(f"验证失败: 期望 {target}, 实际 {verify.Targetpath}")
+                else:
+                    logger.info("验证成功")
+
+                messagebox.showinfo("成功", "已设置开机自启动")
+            except Exception as e:
+                messagebox.showerror("错误", f"创建快捷方式失败: {e}")
+                logger.exception("创建快捷方式异常")
                 self.autostart_var.set(False)
-
-
-        except ImportError:
-            messagebox.showerror("错误", "缺少必要的库，请安装 pywin32 winshell库")
-            self.autostart_var.set(False)
-            logger.error("缺少开机自启动所需的库")
-
-        except Exception as e:
-            messagebox.showerror("错误", f"操作失败：{e}")
-            self.autostart_var.set(False)
-            logger.error(f"设置开机自启动失败：{e}")
+        else:
+            # 取消开机自启动（与之前相同）
+            try:
+                if os.path.exists(shortcut_path):
+                    os.remove(shortcut_path)
+                    logger.info(f"已删除快捷方式: {shortcut_path}")
+                messagebox.showinfo("成功", "已取消开机自启动")
+            except Exception as e:
+                messagebox.showerror("错误", f"删除快捷方式失败: {e}")
+                logger.exception("删除快捷方式异常")
+                self.autostart_var.set(False)
 
     def save_settings(self):
         """应用设置"""
