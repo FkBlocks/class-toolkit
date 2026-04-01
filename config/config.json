@@ -4,5 +4,6 @@
     "menu_color": "#409eff",
     "exit_button_color": "#ff4d4f",
     "ask_exit": true,
-    "show_welcome": true
+    "show_welcome": true,
+    "countdown_red_time": 10
 }

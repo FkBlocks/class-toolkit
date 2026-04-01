@@ -20,7 +20,6 @@ import json
 import os
 import sys
 import platform
-import traceback as tb_module
 from floatball import Ball
 from tools.logger import create_logger
 from tools.consts import DEFAULT_CONFIG
@@ -48,8 +47,6 @@ def ensure_config(project_root):
     if not os.path.exists(cfg_path):
         with open(cfg_path, "w", encoding="utf-8") as f:
             json.dump(default_config, f, indent=4, ensure_ascii=False)
-
-# ... 导入部分 ...
 
 # 获取项目根目录和资源目录
 if getattr(sys, 'frozen', False):

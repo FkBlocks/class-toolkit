@@ -63,7 +63,7 @@ class Settings:
         self.right_panel.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
         # 分类列表
-        self.categories = ["常规", "外观", "功能", "关于"]
+        self.categories = ["常规", "外观", "功能", "工具", "关于"]
         self.categories_button = []
         self.current_category = tk.StringVar(value=self.categories[0])
 
@@ -87,7 +87,7 @@ class Settings:
             width=12
         )
         close_btn.pack(pady=5)
-
+        self.show_general_settings()
         self.window.mainloop()
 
     def load_config(self):
@@ -133,6 +133,9 @@ class Settings:
         elif category == "功能":
             self.show_function_settings()
             self.add_apply_button()
+        elif category == "工具":
+            self.show_tools_settings()
+            self.add_apply_button()
         elif category == "关于":
             self.show_about()
 
@@ -177,15 +180,6 @@ class Settings:
             command=self.toggle_autostart
         )
         autostart_check.pack(side=tk.LEFT, padx=5)
-
-        # 添加说明文字
-        desc_label = ttk.Label(
-            autostart_frame,
-            text="（仅Windows系统支持）",
-            foreground="gray",
-            font=("Arial", 9)
-        )
-        desc_label.pack(side=tk.LEFT, padx=5)
 
         #  是否显示欢迎信息
         if_show_welcome = self.config.get("show_welcome", True)
@@ -393,6 +387,36 @@ class Settings:
             command=self.delete_tool
         )
         delete_btn.pack(pady=5)
+    
+    def show_tools_settings(self):
+        """显示工具设置"""
+        title = ttk.Label(self.right_panel, text="工具设置", font=("Arial", 16, "bold"))
+        title.pack(pady=20)
+
+        # ====================== 倒计时变红时间（秒） ======================
+        countdown_frame = ttk.Frame(self.right_panel)
+        countdown_frame.pack(pady=15, fill=tk.X, padx=20)
+
+        ttk.Label(countdown_frame, text="倒计时变红时间（秒）：", font=("Arial", 11)).pack(side=tk.LEFT, padx=5)
+
+        # 验证：只允许整数
+        def validate_int(char):
+            return char.isdigit() or char == ""
+
+        vcmd = self.window.register(validate_int)
+
+        # 创建输入框
+        self.countdown_entry = ttk.Entry(
+            countdown_frame,
+            validate="key",
+            validatecommand=(vcmd, "%S"),
+            width=10
+        )
+        self.countdown_entry.pack(side=tk.LEFT, padx=5)
+
+        # 加载配置
+        current_time = self.config.get("countdown_red_time", 10)
+        self.countdown_entry.insert(0, str(current_time))
 
     def show_about(self):
         """显示关于信息"""
@@ -577,10 +601,19 @@ class Settings:
 
     def save_settings(self):
         """应用设置"""
+        # 在这里保存倒计时时间（自动判断是否存在输入框）
+        try:
+            if hasattr(self, 'countdown_entry'):
+                time_val = self.countdown_entry.get().strip()
+                if time_val:
+                    self.config["countdown_red_time"] = int(time_val)
+        except:
+            pass
+
         self.save_config()
         self.save_tools()
         messagebox.showinfo("成功", "设置已保存")
-
+        
     def restore_default_settings(self):
         """恢复默认设置"""
         if messagebox.askyesno("确认", "确定要恢复默认设置吗？所有设置都会恢复！"):

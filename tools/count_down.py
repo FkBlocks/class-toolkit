@@ -88,7 +88,14 @@ class CountDownTimer:
         self.update_big()
 
     def update_big(self):
-        self.big.config(text=f"{self.minutes:02d}:{self.seconds:02d}")
+        if self.running:
+            if self.minutes == 0 and self.seconds <= 10:
+                self.big.config(fg="red")
+                self.big.config(text=f"{self.minutes:02d}:{self.seconds:02d}")
+            else:
+                self.big.config(text=f"{self.minutes:02d}:{self.seconds:02d}")
+        else:
+            self.big.config(text=f"{self.minutes:02d}:{self.seconds:02d}")
 
     def start(self):
         logger.info("倒计时开始")

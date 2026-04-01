@@ -14,9 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import platform
-from tkinter import messagebox
-import sys
+import tkinter as tk
 from pycaw.pycaw import AudioUtilities
 from logger import logger
 

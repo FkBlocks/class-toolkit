@@ -21,6 +21,7 @@ DEFAULT_CONFIG = {
         "menu_color": "#409eff",
         "exit_button_color": "#ff4d4f",
         "ask_exit": True,
-        "show_welcome": True
+        "show_welcome": True,
+        "countdown_red_time": 10
 }
 VERSION = "1.0.0"
